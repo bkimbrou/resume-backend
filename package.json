@@ -1,0 +1,21 @@
+{
+  "name": "resume-backend",
+  "version": "1.0.0",
+  "description": "The lambda back end for resume page",
+  "scripts": {},
+  "keywords": [
+    "node",
+    "typescript",
+    "lambda"
+  ],
+  "author": "Brandon Kimbrough",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^11.13.9",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.448.0"
+  }
+}
