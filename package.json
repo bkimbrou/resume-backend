@@ -16,6 +16,9 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
+    "@types/async": "^2.4.1",
+    "@types/uuid": "^3.4.4",
+    "async": "^2.6.2",
     "aws-sdk": "^2.448.0"
   }
 }
