@@ -1,5 +1,82 @@
-export class DynamoHelper {
-    static itemsToJson(items: AWS.DynamoDB.ItemList): Array<any> {
+import AWS from 'aws-sdk'
+import {v4 as uuid} from 'uuid';
+import {GenericInterface} from "./models/genericInterface";
+
+const DYNAMO: AWS.DynamoDB = new AWS.DynamoDB();
+
+export abstract class AbstractDynamoService<T extends GenericInterface> {
+    protected tableName: string;
+    protected readLimit: number;
+
+    protected constructor(tableName: string, readLimit: number) {
+        this.tableName = tableName;
+        this.readLimit = readLimit;
+    }
+
+    abstract readAll(event: any, context: any) : Promise<Array<T>>;
+
+    abstract upsert(event: any, context: any) : Promise<void>;
+
+    abstract delete(event: any, context: any) : Promise<void>;
+
+    protected scanTable() {
+        let params: AWS.DynamoDB.ScanInput = {
+            TableName: this.tableName,
+            Select: 'ALL_ATTRIBUTES',
+            Limit: this.readLimit
+        };
+
+        DYNAMO.scan(params, this.handleScanResults);
+    }
+
+    private handleScanResults(err: AWS.AWSError, data: AWS.DynamoDB.ScanOutput) {
+        if (err) {
+            console.error(err, err.stack);
+            return Promise.reject(err.message)
+        }
+        else if (data.Items) {
+            //TODO: Handle if results were paginated
+            return Promise.resolve(AbstractDynamoService.itemsToJson(data.Items));
+        }
+        else {
+            return Promise.resolve([])
+        }
+    }
+
+    protected putItem(item: T) {
+
+        if (!item.hasOwnProperty('id')) {
+            item.id = uuid()
+        }
+
+        let params: AWS.DynamoDB.PutItemInput = {
+            Item: AbstractDynamoService.jsonToItem(item),
+            TableName: this.tableName
+        };
+
+        DYNAMO.putItem(params, this.handleResult)
+    }
+
+    protected deleteItem(key: any) {
+        let params: AWS.DynamoDB.DeleteItemInput = {
+            Key: key,
+            TableName: this.tableName
+        };
+
+        DYNAMO.deleteItem(params, this.handleResult)
+    }
+
+    private handleResult(err: AWS.AWSError, data: AWS.DynamoDB.PutItemOutput | AWS.DynamoDB.DeleteItemOutput | AWS.DynamoDB.UpdateItemOutput) {
+        if (err) {
+            console.error(err, err.stack);
+            return Promise.reject(err.message)
+        }
+        else {
+            return Promise.resolve()
+        }
+    }
+
+    private static itemsToJson(items: AWS.DynamoDB.ItemList): Array<any> {
         let result: Array<any> = [];
 
         if (items) {
@@ -43,7 +120,7 @@ export class DynamoHelper {
         return result;
     }
 
-    static jsonToItem(obj: any) : AWS.DynamoDB.AttributeMap {
+    private static jsonToItem(obj: any) : AWS.DynamoDB.AttributeMap {
         let result : AWS.DynamoDB.AttributeMap = {};
 
         if (obj) {
