@@ -1,10 +1,9 @@
-interface EducationInterface {
-    id?: string,
-    school?: string,
-    location?: string,
-    isCurrentlyAttending?: boolean,
-    graduationDate?: string,
-    degree?: string
-}
+import {Generic} from "./generic";
 
-export type Education = keyof EducationInterface;
+export interface Education extends Generic{
+    school: string,
+    location: string,
+    isCurrentlyAttending: boolean,
+    degree: string,
+    graduationDate?: Date
+}

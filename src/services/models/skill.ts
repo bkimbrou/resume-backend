@@ -1,9 +1,8 @@
-interface SkillInterface {
-    id?: string,
-    name?: string,
-    description?: string,
-    monthsOfExperience?: number
-    dateLastUsed?: string
-}
+import {Generic} from "./generic";
 
-export type Skill = keyof SkillInterface;
+export interface Skill extends Generic{
+    name: string,
+    description: string,
+    monthsOfExperience: number
+    dateLastUsed: Date
+}

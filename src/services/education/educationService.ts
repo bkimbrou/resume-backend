@@ -3,7 +3,7 @@ import {AbstractDynamoService} from "../abstractDynamoService";
 
 export class EducationService extends AbstractDynamoService<Education>{
     constructor() {
-        super('resume-certifications', 50)
+        super('resume-certifications', 10)
     }
 
     public readAll(event: any, context: any) : Promise<Array<Education>> {

@@ -1,16 +1,18 @@
 import AWS from 'aws-sdk'
 import {v4 as uuid} from 'uuid';
-import {GenericInterface} from "./models/genericInterface";
+import {Generic} from "./models/generic";
 
-const DYNAMO: AWS.DynamoDB = new AWS.DynamoDB();
+AWS.config.update({region: 'us-east-2'});
 
-export abstract class AbstractDynamoService<T extends GenericInterface> {
+export abstract class AbstractDynamoService<T extends Generic> {
     protected tableName: string;
     protected readLimit: number;
+    private dynamo: AWS.DynamoDB;
 
     protected constructor(tableName: string, readLimit: number) {
         this.tableName = tableName;
         this.readLimit = readLimit;
+        this.dynamo = new AWS.DynamoDB();
     }
 
     abstract readAll(event: any, context: any) : Promise<Array<T>>;
@@ -26,7 +28,7 @@ export abstract class AbstractDynamoService<T extends GenericInterface> {
             Limit: this.readLimit
         };
 
-        DYNAMO.scan(params, this.handleScanResults);
+        this.dynamo.scan(params, this.handleScanResults);
     }
 
     private handleScanResults(err: AWS.AWSError, data: AWS.DynamoDB.ScanOutput) {
@@ -44,26 +46,33 @@ export abstract class AbstractDynamoService<T extends GenericInterface> {
     }
 
     protected putItem(item: T) {
-
-        if (!item.hasOwnProperty('id')) {
+        if (!item.id) {
             item.id = uuid()
         }
-
         let params: AWS.DynamoDB.PutItemInput = {
             Item: AbstractDynamoService.jsonToItem(item),
             TableName: this.tableName
         };
 
-        DYNAMO.putItem(params, this.handleResult)
+        this.dynamo.putItem(params, this.handleResult)
     }
 
-    protected deleteItem(key: any) {
-        let params: AWS.DynamoDB.DeleteItemInput = {
-            Key: key,
-            TableName: this.tableName
-        };
+    protected deleteItem(item: Generic) {
+        if (item.id) {
+            let params: AWS.DynamoDB.DeleteItemInput = {
+                Key: {
+                    id: {
+                        S: item.id
+                    }
+                },
+                TableName: this.tableName
+            };
 
-        DYNAMO.deleteItem(params, this.handleResult)
+            this.dynamo.deleteItem(params, this.handleResult)
+        }
+        else {
+            Promise.reject("must have an id to delete")
+        }
     }
 
     private handleResult(err: AWS.AWSError, data: AWS.DynamoDB.PutItemOutput | AWS.DynamoDB.DeleteItemOutput | AWS.DynamoDB.UpdateItemOutput) {
@@ -126,41 +135,42 @@ export abstract class AbstractDynamoService<T extends GenericInterface> {
         if (obj) {
             for(let attribute in obj) {
                 if (obj.hasOwnProperty(attribute)) {
-                    if (obj[attribute]) {
+                    result[attribute] = {};
+                    if (obj[attribute] === undefined || obj[attribute] === null) {
                         result[attribute].NULL = true
                     }
-                    else if (obj[attribute] instanceof String) {
-                        result[attribute].S = obj[attribute]
+                    else if (typeof obj[attribute] === 'boolean') {
+                        result[attribute].BOOL = obj[attribute];
                     }
-                    else if (obj[attribute] instanceof Number) {
-                        result[attribute].N = obj[attribute]
+                    else if (typeof obj[attribute] === "string") {
+                        result[attribute].S = obj[attribute];
                     }
-                    else if (obj[attribute] instanceof Buffer || obj[attribute] instanceof Uint8Array || obj[attribute] instanceof Blob) {
-                        result[attribute].B = obj[attribute]
+                    else if (typeof obj[attribute] === "number") {
+                        result[attribute].N = obj[attribute];
                     }
-                    else if (obj[attribute] instanceof Boolean) {
-                        result[attribute].BOOL = obj[attribute]
+                    else if (obj[attribute] instanceof Buffer || obj[attribute] instanceof Uint8Array) {
+                        result[attribute].B = obj[attribute];
                     }
                     else if (obj[attribute] instanceof Array) {
                         if (obj[attribute].length > 0) {
-                            let elem: any = obj[attribute][0]
+                            let elem: any = obj[attribute][0];
 
-                            if (elem instanceof String) {
-                                result[attribute].SS = obj[attribute]
+                            if (typeof elem === "string") {
+                                result[attribute].SS = obj[attribute];
                             }
-                            else if (elem instanceof Number) {
-                                result[attribute].NS = obj[attribute]
+                            else if (typeof elem === "number") {
+                                result[attribute].NS = obj[attribute];
                             }
-                            else if (elem instanceof Buffer || elem instanceof Uint8Array || elem instanceof Blob) {
-                                result[attribute].BS = obj[attribute]
+                            else if (elem instanceof Buffer || elem instanceof Uint8Array) {
+                                result[attribute].BS = obj[attribute];
                             }
                             else {
-                                result[attribute].L = obj[attribute]
+                                result[attribute].L = obj[attribute];
                             }
                         }
                     }
                     else {
-                        result[attribute].M = obj[attribute]
+                        result[attribute].M = obj[attribute];
                     }
                 }
             }

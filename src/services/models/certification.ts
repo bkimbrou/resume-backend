@@ -1,11 +1,9 @@
-import {GenericInterface} from "./genericInterface";
+import {Generic} from "./generic";
 
-interface CertificationInterface extends GenericInterface{
-    name?: string,
-    description?: string,
-    dateIssued?: string,
-    dateExpires?: string,
+export interface Certification extends Generic{
+    name: string,
+    description: string,
+    dateIssued: Date,
+    dateExpires?: Date,
     image?: string,
 }
-
-export type Certification = keyof CertificationInterface;
