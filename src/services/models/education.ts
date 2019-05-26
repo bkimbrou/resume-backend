@@ -1,4 +1,4 @@
-import {Generic} from "./generic";
+import {Generic} from './generic';
 
 export interface Education extends Generic{
     school: string,

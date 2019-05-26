@@ -1,32 +1,43 @@
-import {CertificationService} from "./certificationService";
-import {Certification} from "../models/certification";
-import {expect} from 'chai';
-import 'mocha';
-import AWS from 'aws-sdk'
+import {CertificationService} from './certificationService';
+import {Certification} from '../models/certification';
 import AWSMock from 'aws-sdk-mock'
+import {v4 as uuid} from 'uuid';
+import {expect} from 'chai';
+import {mochaAsync} from '../../mochaHelper';
+import 'mocha';
 
 describe('Certification Service Tests', () => {
     let service: CertificationService;
     const certification: Certification = {
-        name: "Sample Cert",
-        description: "A dummy certification",
+        name: 'Sample Cert',
+        description: 'A dummy certification',
         dateIssued: new Date(2019, 5, 13),
-        dateExpires: new Date(20122, 5, 13)
+        dateExpires: new Date(2022, 5, 13),
+        image: 'https://dummycert.com/sample'
     };
 
     beforeEach(() => {
         service = new CertificationService();
-        AWSMock.setSDKInstance(AWS);
-        AWSMock.mock('DynamoDB', 'putItem', (params: any, callback: (err: any, data: any) => void) => console.log('replacing Dynamo PutItem call'));
     });
 
     afterEach(() => {
         AWSMock.restore()
     });
 
-    it('Can create an item', () => {
-        service.upsert(certification).catch(reason => {
-            expect.fail(null, null, reason)
-        }).then(() => expect(true).to.be.true);
-    });
+    it('Can create an item', mochaAsync(async () => {
+        AWSMock.mock('DynamoDB', 'putItem', (params: Certification, callback: any) => {
+            console.log('Returning certification content from mock');
+            let temp: Certification = Object.create(certification);
+            temp.id = uuid();
+            return callback(null, temp);
+        });
+
+        let res: Certification = await service.upsert(certification);
+        expect(res.id).empty.false;
+        expect(res.name).to.eql(certification.name);
+        expect(res.description).to.not.eql(certification.description);
+        expect(res.dateIssued).to.eql(certification.dateIssued);
+        expect(res.dateExpires).to.eql(certification.dateExpires);
+        expect(res.image).to.eql(certification.image);
+    }));
 });

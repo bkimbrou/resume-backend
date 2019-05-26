@@ -1,7 +1,8 @@
-import {Certification} from "../models/certification";
-import {AbstractDynamoService} from "../abstractDynamoService";
+import {Certification} from '../models/certification';
+import {AbstractDynamoService} from '../abstractDynamoService';
+import {Service} from '../service';
 
-export class CertificationService extends AbstractDynamoService<Certification>{
+export class CertificationService extends AbstractDynamoService<Certification> implements Service<Certification> {
     constructor() {
         super('resume-certifications', 50)
     }
@@ -10,11 +11,11 @@ export class CertificationService extends AbstractDynamoService<Certification>{
         return new Promise<Array<Certification>>(this.scanTable);
     }
 
-    public upsert(event: Certification, context: any = {}) : Promise<void> {
-        return new Promise<void>(() => this.putItem(event));
+    public upsert(event: Certification, context: any = {}) : Promise<Certification> {
+        return new Promise<Certification>(() => this.putItem(event));
     }
 
-    public delete(event: any, context: any = {}) : Promise<void> {
-        return new Promise<void>(() => this.deleteItem(event));
+    public delete(event: any, context: any = {}) : Promise<any> {
+        return new Promise<any>(() => this.deleteItem(event));
     }
 }

@@ -1,4 +1,4 @@
-import {Generic} from "./generic";
+import {Generic} from './generic';
 
 export interface Certification extends Generic{
     name: string,

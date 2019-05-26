@@ -1,7 +1,8 @@
-import {Skill} from "../models/skill";
-import {AbstractDynamoService} from "../abstractDynamoService";
+import {Skill} from '../models/skill';
+import {AbstractDynamoService} from '../abstractDynamoService';
+import {Service} from '../service';
 
-export class SkillService extends AbstractDynamoService<Skill>{
+export class SkillService extends AbstractDynamoService<Skill> implements Service<Skill> {
     constructor() {
         super('resume-certifications', 50)
     }
@@ -10,11 +11,11 @@ export class SkillService extends AbstractDynamoService<Skill>{
         return new Promise<Array<Skill>>(this.scanTable);
     }
 
-    public upsert(event: Skill, context: any) : Promise<void> {
-        return new Promise<void>(() => this.putItem(event));
+    public upsert(event: Skill, context: any) : Promise<Skill> {
+        return new Promise<Skill>(() => this.putItem(event));
     }
 
-    public delete(event: any, context: any) : Promise<void> {
-        return new Promise<void>(() => this.deleteItem(event));
+    public delete(event: any, context: any) : Promise<any> {
+        return new Promise<any>(() => this.deleteItem(event));
     }
 }

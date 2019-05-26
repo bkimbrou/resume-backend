@@ -1,4 +1,4 @@
-import {Generic} from "./generic";
+import {Generic} from './generic';
 
 export interface Skill extends Generic{
     name: string,

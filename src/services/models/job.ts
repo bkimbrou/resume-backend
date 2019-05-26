@@ -1,4 +1,4 @@
-import {Generic} from "./generic";
+import {Generic} from './generic';
 
 export interface Job extends Generic {
     employer: string,
