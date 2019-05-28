@@ -8,41 +8,41 @@ import {JobService} from './services/jobs/jobService';
 import {EducationService} from './services/education/educationService';
 
 export const readSkillsHandler = async (event: any = {}, context: any = {}): Promise<Array<Skill>> => {
-    return new SkillService().readAll(event, context);
+    return await new SkillService().readAll(event, context);
 };
 export const upsertSkillHandler = async (event: Skill, context: any = {}): Promise<Skill> => {
-    return new SkillService().upsert(event, context)
+    return await new SkillService().upsert(event, context)
 };
 export const deleteSkillHandler = async (event: any = {}, context: any = {}): Promise<any> => {
-    return new SkillService().delete(event, context);
+    return await new SkillService().delete(event, context);
 };
 
 export const readJobsHandler = async (event: any = {}, context: any = {}): Promise<Array<Job>> => {
-    return new JobService().readAll(event, context);
+    return await new JobService().readAll(event, context);
 };
 export const upsertJobHandler = async (event: Job, context: any = {}): Promise<Job> => {
-    return new JobService().upsert(event, context);
+    return await new JobService().upsert(event, context);
 };
 export const deleteJobHandler = async (event: any = {}, context: any = {}): Promise<any> => {
-    return new JobService().delete(event, context);
+    return await new JobService().delete(event, context);
 };
 
 export const readCertificationsHandler = async (event: any = {}, context: any = {}): Promise<Array<Certification>> => {
-    return new CertificationService().readAll(event, context);
+    return await new CertificationService().readAll(event, context);
 };
 export const upsertCertificationHandler = async (event: Certification, context: any = {}): Promise<Certification> => {
-    return new CertificationService().upsert(event, context);
+    return await new CertificationService().upsert(event, context);
 };
 export const deleteCertificationHandler = async (event: any = {}, context: any = {}): Promise<any> => {
-    return new CertificationService().delete(event, context);
+    return await new CertificationService().delete(event, context);
 };
 
 export const readEducationHandler = async (event: any = {}, context: any = {}): Promise<Array<Education>> => {
-    return new EducationService().readAll(event, context);
+    return await new EducationService().readAll(event, context);
 };
 export const upsertEducationHandler = async (event: Education, context: any = {}): Promise<Education> => {
-    return new EducationService().upsert(event, context);
+    return await new EducationService().upsert(event, context);
 };
 export const deleteEducationHandler = async (event: any = {}, context: any = {}): Promise<any> => {
-    return new EducationService().delete(event, context);
+    return await new EducationService().delete(event, context);
 };

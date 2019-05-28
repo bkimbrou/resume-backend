@@ -7,15 +7,15 @@ export class CertificationService extends AbstractDynamoService<Certification> i
         super('resume-certifications', 50)
     }
 
-    public readAll(event: any = {}, context: any = {}) : Promise<Array<Certification>> {
-        return new Promise<Array<Certification>>(this.scanTable);
+    public async readAll(event: any = {}, context: any = {}) : Promise<Array<Certification>> {
+        return await this.scanTable();
     }
 
-    public upsert(event: Certification, context: any = {}) : Promise<Certification> {
-        return new Promise<Certification>(() => this.putItem(event));
+    public async upsert(event: Certification, context: any = {}) : Promise<Certification> {
+        return await this.putItem(event);
     }
 
-    public delete(event: any, context: any = {}) : Promise<any> {
-        return new Promise<any>(() => this.deleteItem(event));
+    public async delete(event: any, context: any = {}) : Promise<any> {
+        return await this.deleteItem(event);
     }
 }
