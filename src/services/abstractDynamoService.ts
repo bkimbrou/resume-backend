@@ -1,8 +1,6 @@
-import AWS, {AWSError} from 'aws-sdk'
+import AWS from 'aws-sdk'
 import {v4 as uuid} from 'uuid';
 import {Generic} from './models/generic';
-import {PromiseResult} from 'aws-sdk/lib/request';
-import {LambdaResult} from './models/lambda';
 
 AWS.config.update({region: 'us-east-2'});
 
@@ -24,22 +22,16 @@ export abstract class AbstractDynamoService<T extends Generic> {
             Limit: this.readLimit
         };
 
-        return this.handleScanResults(await dynamo.scan(params).promise())
-    }
-
-    private handleScanResults(result: PromiseResult<AWS.DynamoDB.ScanOutput, AWSError>) : Promise<Array<T>> {
-        if (result.$response && result.$response.error) {
-            let err: AWSError = result.$response.error;
-            console.error(err, err);
-            return Promise.reject(err);
-        }
-        else if (result.Items) {
-            //TODO: Handle if results were paginated
-            return Promise.resolve(AbstractDynamoService.itemsToJson(result.Items));
-        }
-        else {
-            return Promise.resolve([]);
-        }
+        return await dynamo.scan(params).promise()
+            .then(result => {
+                if (result.Items) {
+                    //TODO: Handle if results were paginated
+                    return Promise.resolve(AbstractDynamoService.itemsToJson(result.Items));
+                }
+                else {
+                    return Promise.resolve([]);
+                }
+            }).catch(reason => Promise.reject(reason.message));
     }
 
     protected async putItem(item: T) : Promise<void> {
@@ -53,7 +45,9 @@ export abstract class AbstractDynamoService<T extends Generic> {
             TableName: this.tableName
         };
 
-        return this.handleResult(await dynamo.putItem(params).promise());
+        return await dynamo.putItem(params).promise()
+            .then(() => Promise.resolve())
+            .catch(reason => Promise.reject(reason.message));
     }
 
     protected async deleteItem(item: Generic) : Promise<void> {
@@ -69,21 +63,12 @@ export abstract class AbstractDynamoService<T extends Generic> {
                 TableName: this.tableName
             };
 
-            return this.handleResult(await dynamo.deleteItem(params).promise());
+            return await dynamo.deleteItem(params).promise()
+                .then(() => Promise.resolve())
+                .catch(reason => Promise.reject(reason.message));
         }
         else {
             return Promise.reject('must have an id to delete');
-        }
-    }
-
-    private handleResult(result: PromiseResult<AWS.DynamoDB.PutItemOutput | AWS.DynamoDB.DeleteItemOutput | AWS.DynamoDB.UpdateItemOutput, AWSError>) : Promise<void> {
-        if (result.$response && result.$response.error) {
-            let err: AWSError = result.$response.error;
-            console.error(err, err);
-            return Promise.reject(err);
-        }
-        else {
-            return Promise.resolve();
         }
     }
 
