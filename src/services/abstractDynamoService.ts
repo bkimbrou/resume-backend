@@ -2,6 +2,7 @@ import AWS, {AWSError} from 'aws-sdk'
 import {v4 as uuid} from 'uuid';
 import {Generic} from './models/generic';
 import {PromiseResult} from 'aws-sdk/lib/request';
+import {LambdaResult} from './models/lambda';
 
 AWS.config.update({region: 'us-east-2'});
 
@@ -23,13 +24,14 @@ export abstract class AbstractDynamoService<T extends Generic> {
             Limit: this.readLimit
         };
 
-        return AbstractDynamoService.handleScanResults(await dynamo.scan(params).promise())
+        return this.handleScanResults(await dynamo.scan(params).promise())
     }
 
-    private static handleScanResults(result: PromiseResult<AWS.DynamoDB.ScanOutput, AWSError>) : Promise<Array<any>> {
+    private handleScanResults(result: PromiseResult<AWS.DynamoDB.ScanOutput, AWSError>) : Promise<Array<T>> {
         if (result.$response && result.$response.error) {
-            console.error(result.$response.error, result.$response.error.stack);
-            return Promise.reject(result.$response.error.message);
+            let err: AWSError = result.$response.error;
+            console.error(err, err);
+            return Promise.reject(err);
         }
         else if (result.Items) {
             //TODO: Handle if results were paginated
@@ -40,7 +42,7 @@ export abstract class AbstractDynamoService<T extends Generic> {
         }
     }
 
-    protected async putItem(item: T) : Promise<T> {
+    protected async putItem(item: T) : Promise<void> {
         const dynamo = new AWS.DynamoDB();
 
         if (!item.id) {
@@ -51,10 +53,10 @@ export abstract class AbstractDynamoService<T extends Generic> {
             TableName: this.tableName
         };
 
-        return AbstractDynamoService.handleResult(await dynamo.putItem(params).promise());
+        return this.handleResult(await dynamo.putItem(params).promise());
     }
 
-    protected async deleteItem(item: Generic) : Promise<any> {
+    protected async deleteItem(item: Generic) : Promise<void> {
         const dynamo = new AWS.DynamoDB();
 
         if (item.id) {
@@ -67,39 +69,35 @@ export abstract class AbstractDynamoService<T extends Generic> {
                 TableName: this.tableName
             };
 
-            return AbstractDynamoService.handleResult(await dynamo.deleteItem(params).promise());
+            return this.handleResult(await dynamo.deleteItem(params).promise());
         }
         else {
             return Promise.reject('must have an id to delete');
         }
     }
 
-    private static handleResult(result: PromiseResult<AWS.DynamoDB.PutItemOutput | AWS.DynamoDB.DeleteItemOutput | AWS.DynamoDB.UpdateItemOutput, AWSError>) : Promise<any> {
+    private handleResult(result: PromiseResult<AWS.DynamoDB.PutItemOutput | AWS.DynamoDB.DeleteItemOutput | AWS.DynamoDB.UpdateItemOutput, AWSError>) : Promise<void> {
         if (result.$response && result.$response.error) {
-            console.error(result.$response.error, result.$response.error.stack);
-            return Promise.reject(result.$response.error.message);
+            let err: AWSError = result.$response.error;
+            console.error(err, err);
+            return Promise.reject(err);
         }
         else {
-            if (result.Attributes) {
-                return Promise.resolve(AbstractDynamoService.itemToJson(result.Attributes));
-            }
-            else {
-                return Promise.resolve();
-            }
+            return Promise.resolve();
         }
     }
 
-    private static itemsToJson(items: AWS.DynamoDB.ItemList) : Array<any> {
+    static itemsToJson(items: AWS.DynamoDB.ItemList) : Array<any> {
         let result: Array<any> = [];
 
         if (items) {
-            items.forEach(AbstractDynamoService.itemToJson);
+            items.map(AbstractDynamoService.itemToJson).forEach(json => result.push(json));
         }
 
         return result;
     }
 
-    private static itemToJson(item: AWS.DynamoDB.AttributeMap) : any {
+    static itemToJson(item: AWS.DynamoDB.AttributeMap) : any {
         let obj: any = {};
         for (let attribute in item) {
 
@@ -137,7 +135,7 @@ export abstract class AbstractDynamoService<T extends Generic> {
         return obj;
     }
 
-    private static jsonToItem(obj: any) : AWS.DynamoDB.AttributeMap {
+    static jsonToItem(obj: any) : AWS.DynamoDB.AttributeMap {
         let result : AWS.DynamoDB.AttributeMap = {};
 
         if (obj) {

@@ -4,8 +4,8 @@ export interface Service<T extends Generic> {
 
     readAll(event: any, context: any) : Promise<Array<T>>;
 
-    upsert(event: any, context: any) : Promise<T>;
+    upsert(event: any, context: any) : Promise<void>;
 
-    delete(event: any, context: any) : Promise<any>;
+    delete(event: any, context: any) : Promise<void>;
 
 }

@@ -2,21 +2,22 @@ import {Job} from '../models/job';
 import {AbstractDynamoService} from '../abstractDynamoService';
 import {Service} from '../service';
 import {Certification} from '../models/certification';
+import {Education} from '../models/education';
 
 export class JobService extends AbstractDynamoService<Job> implements Service<Job> {
     constructor() {
-        super('resume-certifications', 50)
+        super('resume-jobs', 50)
     }
 
-    public readAll(event: any, context: any) : Promise<Array<Job>> {
-        return new Promise<Array<Job>>(this.scanTable);
+    public async readAll(event: any = {}, context: any = {}) : Promise<Array<Job>> {
+        return await this.scanTable();
     }
 
-    public upsert(event: Job, context: any) : Promise<Job> {
-        return new Promise<Job>(() => this.putItem(event));
+    public async upsert(event: Job, context: any = {}) : Promise<void> {
+        return await this.putItem(event);
     }
 
-    public delete(event: any, context: any) : Promise<any> {
-        return new Promise<any>(() => this.deleteItem(event));
+    public async delete(event: any, context: any = {}) : Promise<void> {
+        return await this.deleteItem(event);
     }
 }

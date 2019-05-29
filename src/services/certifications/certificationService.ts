@@ -11,11 +11,11 @@ export class CertificationService extends AbstractDynamoService<Certification> i
         return await this.scanTable();
     }
 
-    public async upsert(event: Certification, context: any = {}) : Promise<Certification> {
+    public async upsert(event: Certification, context: any = {}) : Promise<void> {
         return await this.putItem(event);
     }
 
-    public async delete(event: any, context: any = {}) : Promise<any> {
+    public async delete(event: any, context: any = {}) : Promise<void> {
         return await this.deleteItem(event);
     }
 }
