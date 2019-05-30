@@ -114,6 +114,9 @@ export abstract class AbstractDynamoService<T extends Generic> {
                 else if (item[attribute].hasOwnProperty('BOOL')) {
                     obj[attribute] = item[attribute].BOOL;
                 }
+                else if (item[attribute].hasOwnProperty('NULL')) {
+                    obj[attribute] = item[attribute].NULL ? null : undefined;
+                }
             }
         }
 
