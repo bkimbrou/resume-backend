@@ -233,7 +233,7 @@ describe('Skill Service Tests', () => {
     });
 });
 
-const generateSkill = function (withId: boolean = true) : Skill {
+export const generateSkill = function (withId: boolean = true) : Skill {
     let result: Skill = {
         name: randomNumber(50).toString(36),
         description: randomNumber(50).toString(36),

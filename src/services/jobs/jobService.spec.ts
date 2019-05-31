@@ -237,7 +237,7 @@ describe('Job Service Tests', () => {
     });
 });
 
-const generateJob = function (withId: boolean = true, withEndDate: boolean = true) : Job {
+export const generateJob = function (withId: boolean = true, withEndDate: boolean = true) : Job {
     let result: Job = {
         employer: randomNumber(50).toString(36),
         title: randomNumber(50).toString(36),

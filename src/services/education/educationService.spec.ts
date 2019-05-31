@@ -237,7 +237,7 @@ describe('Education Service Tests', () => {
     });
 });
 
-const generateEducation = function (withId: boolean = true) : Education {
+export const generateEducation = function (withId: boolean = true) : Education {
     let result: Education = {
         school: randomNumber(50).toString(36),
         degree: randomNumber(50).toString(36),

@@ -233,7 +233,7 @@ describe('Certification Service Tests', () => {
     });
 });
 
-const generateCertification = function (withId: boolean = true) : Certification {
+export const generateCertification = function (withId: boolean = true) : Certification {
     let result: Certification = {
         name: randomNumber(50).toString(36),
         description: randomNumber(200, 20).toString(36),

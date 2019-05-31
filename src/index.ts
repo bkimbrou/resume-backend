@@ -13,8 +13,9 @@ const APPLICATION_JSON = 'application/json';
 const DEFAULT_HEADERS = new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, APPLICATION_JSON);
 
 export const readSkillsHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+    const skillService: SkillService = new SkillService();
     try {
-        let data: Array<Skill> = await new SkillService().readAll(event, context);
+        let data: Array<Skill> = await skillService.readAll(event, context);
         return handleSuccess(data);
     }
     catch (err) {
