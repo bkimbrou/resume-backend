@@ -70,7 +70,7 @@ describe("Core Dynamo Service Tests", () => {
 
         expect(result.nil.NULL).is.true;
         expect(result.str.S).to.eql(obj.str);
-        expect(result.num.N).to.eql(obj.num);
+        expect(result.num.N).to.eql(String(obj.num));
         expect(result.bool.BOOL).to.eql(obj.bool);
         expect(result.buf.B).to.eql(obj.buf);
         expect(result.map.M).to.eql(obj.map);

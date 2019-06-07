@@ -7,10 +7,9 @@ import {SkillService} from './services/skills/skillService';
 import {JobService} from './services/jobs/jobService';
 import {EducationService} from './services/education/educationService';
 import {LambdaInput, LambdaResult} from './services/models/lambda';
-import {constants as http2Constants} from 'http2';
 
 const APPLICATION_JSON = 'application/json';
-const DEFAULT_HEADERS = new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, APPLICATION_JSON);
+const DEFAULT_HEADERS = new Map().set('Content-Type', APPLICATION_JSON);
 
 export const skillService: SkillService = new SkillService();
 export const jobService: JobService = new JobService();
@@ -131,7 +130,7 @@ export const deleteEducationHandler = async (event: LambdaInput = {}, context: a
 
 const handleError = function (err: any) {
     return Promise.resolve({
-        statusCode: http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR,
+        statusCode: 500,
         headers: DEFAULT_HEADERS,
         data: err
     });
@@ -139,7 +138,7 @@ const handleError = function (err: any) {
 
 const handleSuccess = function (data: any) {
     return Promise.resolve({
-        statusCode: http2Constants.HTTP_STATUS_OK,
+        statusCode: 200,
         headers: DEFAULT_HEADERS,
         data: data
     });
@@ -147,6 +146,6 @@ const handleSuccess = function (data: any) {
 
 const handleAccepted = function () {
     return Promise.resolve({
-        statusCode: http2Constants.HTTP_STATUS_ACCEPTED
+        statusCode: 202
     });
 };

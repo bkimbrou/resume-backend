@@ -140,7 +140,7 @@ export abstract class AbstractDynamoService<T extends Generic> {
                         result[attribute].S = obj[attribute];
                     }
                     else if (typeof obj[attribute] === 'number') {
-                        result[attribute].N = obj[attribute];
+                        result[attribute].N = String(obj[attribute]);
                     }
                     else if (obj[attribute] instanceof Buffer || obj[attribute] instanceof Uint8Array) {
                         result[attribute].B = obj[attribute];

@@ -2,7 +2,13 @@
   "name": "resume-backend",
   "version": "1.0.0",
   "description": "The lambda back end for resume page",
-  "scripts": {},
+  "scripts": {
+    "unit": "mocha --require ts-node/register --ui bdd 'src/**/*.spec.ts'",
+    "cover:unit": "nyc npm run unit",
+    "build": "npm run build:prod",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production"
+  },
   "keywords": [
     "node",
     "typescript",
@@ -11,22 +17,25 @@
   "author": "Brandon Kimbrough",
   "license": "ISC",
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.6",
-    "@types/node": "^11.13.9",
-    "@types/sinon": "^7.0.12",
-    "aws-sdk-mock": "^4.4.0",
-    "chai": "^4.2.0",
-    "mocha": "^6.1.4",
-    "nyc": "^14.1.1",
-    "sinon": "^7.3.2",
-    "ts-node": "^8.1.0",
-    "typescript": "^3.4.5"
+    "@types/async": "~2.4.1",
+    "@types/chai": "~4.1.7",
+    "@types/mocha": "~5.2.6",
+    "@types/node": "~11.13.9",
+    "@types/sinon": "~7.0.12",
+    "@types/uuid": "~3.4.4",
+    "aws-sdk-mock": "~4.4.0",
+    "chai": "~4.2.0",
+    "mocha": "~6.1.4",
+    "nyc": "~14.1.1",
+    "sinon": "~7.3.2",
+    "ts-loader": "~6.0.2",
+    "ts-node": "~8.2.0",
+    "typescript": "~3.5.1",
+    "webpack": "~4.33.0",
+    "webpack-cli": "~3.3.3",
+    "aws-sdk": "~2.437.0"
   },
   "dependencies": {
-    "@types/async": "^2.4.1",
-    "@types/uuid": "^3.4.4",
-    "async": "^2.6.2",
-    "aws-sdk": "^2.463.0"
+    "async": "~2.6.2"
   }
 }

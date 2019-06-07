@@ -78,7 +78,7 @@ describe('Skill Service Tests', () => {
             expect(res[0].id).to.eql(skill.id);
             expect(res[0].name).to.eql(skill.name);
             expect(res[0].description).to.eql(skill.description);
-            expect(res[0].monthsOfExperience).to.eql(skill.monthsOfExperience);
+            expect(res[0].monthsOfExperience).to.eql(String(skill.monthsOfExperience));
             expect(res[0].dateLastUsed).to.eql(skill.dateLastUsed);
         }));
 
@@ -103,19 +103,19 @@ describe('Skill Service Tests', () => {
             expect(res[0].id).to.eql(skill1.id);
             expect(res[0].name).to.eql(skill1.name);
             expect(res[0].description).to.eql(skill1.description);
-            expect(res[0].monthsOfExperience).to.eql(skill1.monthsOfExperience);
+            expect(res[0].monthsOfExperience).to.eql(String(skill1.monthsOfExperience));
             expect(res[0].dateLastUsed).to.eql(skill1.dateLastUsed);
 
             expect(res[1].id).to.eql(skill2.id);
             expect(res[1].name).to.eql(skill2.name);
             expect(res[1].description).to.eql(skill2.description);
-            expect(res[1].monthsOfExperience).to.eql(skill2.monthsOfExperience);
+            expect(res[1].monthsOfExperience).to.eql(String(skill2.monthsOfExperience));
             expect(res[1].dateLastUsed).to.eql(skill2.dateLastUsed);
 
             expect(res[2].id).to.eql(skill3.id);
             expect(res[2].name).to.eql(skill3.name);
             expect(res[2].description).to.eql(skill3.description);
-            expect(res[2].monthsOfExperience).to.eql(skill3.monthsOfExperience);
+            expect(res[2].monthsOfExperience).to.eql(String(skill3.monthsOfExperience));
             expect(res[2].dateLastUsed).to.eql(skill3.dateLastUsed);
         }));
 

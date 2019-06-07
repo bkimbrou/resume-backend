@@ -13,7 +13,6 @@ import {
     skillService, upsertCertificationHandler, upsertEducationHandler, upsertJobHandler,
     upsertSkillHandler
 } from './index';
-import {constants as http2Constants} from 'http2';
 import {Skill} from './services/models/skill';
 import {Generic} from './services/models/generic';
 import uuid = require('uuid');
@@ -23,6 +22,11 @@ import {generateJob} from './services/jobs/jobService.spec';
 import {Job} from './services/models/job';
 import {Education} from './services/models/education';
 import {generateEducation} from './services/education/educationService.spec';
+
+const HTTP_STATUS_OK = 200;
+const HTTP_STATUS_ACCEPTED = 202;
+const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
+const CONTENT_TYPE = 'Content-Type';
 
 describe("Index Tests", () => {
     let stub: sinon.SinonStub<any, any>;
@@ -34,8 +38,8 @@ describe("Index Tests", () => {
             stub = sinon.stub(skillService, 'readAll').returns(Promise.resolve([generateSkill()]));
             const result: LambdaResult = await readSkillsHandler();
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_OK);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_OK);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).is.not.undefined;
         }));
 
@@ -43,8 +47,8 @@ describe("Index Tests", () => {
             stub = sinon.stub(skillService, 'readAll').returns(Promise.reject('Failed to read all skills'));
             const result: LambdaResult = await readSkillsHandler();
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to read all skills');
         }));
 
@@ -55,7 +59,7 @@ describe("Index Tests", () => {
             stub.withArgs(skill).returns(Promise.resolve());
             const result: LambdaResult = await upsertSkillHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_ACCEPTED);
+            expect(result.statusCode).to.eql(HTTP_STATUS_ACCEPTED);
         }));
 
         it("Can handle an error when inserting skill", mochaAsync(async () => {
@@ -65,8 +69,8 @@ describe("Index Tests", () => {
             stub.withArgs(skill).returns(Promise.reject('Failed to put skill in database'));
             const result: LambdaResult = await upsertSkillHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to put skill in database');
         }));
 
@@ -77,7 +81,7 @@ describe("Index Tests", () => {
             stub.withArgs(id).returns(Promise.resolve());
             const result: LambdaResult = await deleteSkillHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_ACCEPTED);
+            expect(result.statusCode).to.eql(HTTP_STATUS_ACCEPTED);
         }));
 
         it("Can handle an error when delete skill", mochaAsync(async () => {
@@ -87,8 +91,8 @@ describe("Index Tests", () => {
             stub.withArgs(id).returns(Promise.reject('Failed to delete skill from database'));
             const result: LambdaResult = await deleteSkillHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to delete skill from database');
         }));
     });
@@ -98,8 +102,8 @@ describe("Index Tests", () => {
             stub = sinon.stub(certificationService, 'readAll').returns(Promise.resolve([generateCertification()]));
             const result: LambdaResult = await readCertificationsHandler();
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_OK);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_OK);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).is.not.undefined;
         }));
 
@@ -107,8 +111,8 @@ describe("Index Tests", () => {
             stub = sinon.stub(certificationService, 'readAll').returns(Promise.reject('Failed to read all certifications'));
             const result: LambdaResult = await readCertificationsHandler();
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to read all certifications');
         }));
 
@@ -119,7 +123,7 @@ describe("Index Tests", () => {
             stub.withArgs(certification).returns(Promise.resolve());
             const result: LambdaResult = await upsertCertificationHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_ACCEPTED);
+            expect(result.statusCode).to.eql(HTTP_STATUS_ACCEPTED);
         }));
 
         it("Can handle an error when inserting certification", mochaAsync(async () => {
@@ -129,8 +133,8 @@ describe("Index Tests", () => {
             stub.withArgs(certification).returns(Promise.reject('Failed to put certification in database'));
             const result: LambdaResult = await upsertCertificationHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to put certification in database');
         }));
 
@@ -141,7 +145,7 @@ describe("Index Tests", () => {
             stub.withArgs(id).returns(Promise.resolve());
             const result: LambdaResult = await deleteCertificationHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_ACCEPTED);
+            expect(result.statusCode).to.eql(HTTP_STATUS_ACCEPTED);
         }));
 
         it("Can handle an error when delete certification", mochaAsync(async () => {
@@ -151,8 +155,8 @@ describe("Index Tests", () => {
             stub.withArgs(id).returns(Promise.reject('Failed to delete certification from database'));
             const result: LambdaResult = await deleteCertificationHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to delete certification from database');
         }));
     });
@@ -162,8 +166,8 @@ describe("Index Tests", () => {
             stub = sinon.stub(jobService, 'readAll').returns(Promise.resolve([generateJob()]));
             const result: LambdaResult = await readJobsHandler();
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_OK);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_OK);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).is.not.undefined;
         }));
 
@@ -171,8 +175,8 @@ describe("Index Tests", () => {
             stub = sinon.stub(jobService, 'readAll').returns(Promise.reject('Failed to read all jobs'));
             const result: LambdaResult = await readJobsHandler();
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to read all jobs');
         }));
 
@@ -183,7 +187,7 @@ describe("Index Tests", () => {
             stub.withArgs(job).returns(Promise.resolve());
             const result: LambdaResult = await upsertJobHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_ACCEPTED);
+            expect(result.statusCode).to.eql(HTTP_STATUS_ACCEPTED);
         }));
 
         it("Can handle an error when inserting job", mochaAsync(async () => {
@@ -193,8 +197,8 @@ describe("Index Tests", () => {
             stub.withArgs(job).returns(Promise.reject('Failed to put job in database'));
             const result: LambdaResult = await upsertJobHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to put job in database');
         }));
 
@@ -205,7 +209,7 @@ describe("Index Tests", () => {
             stub.withArgs(id).returns(Promise.resolve());
             const result: LambdaResult = await deleteJobHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_ACCEPTED);
+            expect(result.statusCode).to.eql(HTTP_STATUS_ACCEPTED);
         }));
 
         it("Can handle an error when delete job", mochaAsync(async () => {
@@ -215,8 +219,8 @@ describe("Index Tests", () => {
             stub.withArgs(id).returns(Promise.reject('Failed to delete job from database'));
             const result: LambdaResult = await deleteJobHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to delete job from database');
         }));
     });
@@ -226,8 +230,8 @@ describe("Index Tests", () => {
             stub = sinon.stub(educationService, 'readAll').returns(Promise.resolve([generateEducation()]));
             const result: LambdaResult = await readEducationHandler();
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_OK);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_OK);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).is.not.undefined;
         }));
 
@@ -235,8 +239,8 @@ describe("Index Tests", () => {
             stub = sinon.stub(educationService, 'readAll').returns(Promise.reject('Failed to read all education'));
             const result: LambdaResult = await readEducationHandler();
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to read all education');
         }));
 
@@ -247,7 +251,7 @@ describe("Index Tests", () => {
             stub.withArgs(education).returns(Promise.resolve());
             const result: LambdaResult = await upsertEducationHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_ACCEPTED);
+            expect(result.statusCode).to.eql(HTTP_STATUS_ACCEPTED);
         }));
 
         it("Can handle an error when inserting education", mochaAsync(async () => {
@@ -257,8 +261,8 @@ describe("Index Tests", () => {
             stub.withArgs(education).returns(Promise.reject('Failed to put education in database'));
             const result: LambdaResult = await upsertEducationHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to put education in database');
         }));
 
@@ -269,7 +273,7 @@ describe("Index Tests", () => {
             stub.withArgs(id).returns(Promise.resolve());
             const result: LambdaResult = await deleteEducationHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_ACCEPTED);
+            expect(result.statusCode).to.eql(HTTP_STATUS_ACCEPTED);
         }));
 
         it("Can handle an error when delete education", mochaAsync(async () => {
@@ -279,8 +283,8 @@ describe("Index Tests", () => {
             stub.withArgs(id).returns(Promise.reject('Failed to delete education from database'));
             const result: LambdaResult = await deleteEducationHandler(input);
 
-            expect(result.statusCode).to.eql(http2Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            expect(result.headers).to.eql(new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, 'application/json'));
+            expect(result.statusCode).to.eql(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            expect(result.headers).to.eql(new Map().set(CONTENT_TYPE, 'application/json'));
             expect(result.data).to.eql('Failed to delete education from database');
         }));
     });

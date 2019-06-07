@@ -3,15 +3,20 @@
     "target": "es2017",
     "module": "commonjs",
     "outDir": "./dist",
+    "sourceMap": true,
     "strict": true,
-    "baseUrl": "./src",
     "typeRoots": [
       "node_modules/@types"
     ],
     "types": [
       "node"
     ],
-    "esModuleInterop": true,
-    "inlineSourceMap": true
-  }
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "src/**/*.spec.ts"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ]
 }

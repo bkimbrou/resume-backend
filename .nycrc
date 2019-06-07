@@ -1,0 +1,19 @@
+{
+  "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "all": true,
+    "check-coverage": true,
+    "exclude": [
+        "**/*.spec.ts",
+        "**/dist/**",
+        "**/infrastructure/**"
+    ],
+    "reporter": ["html"],
+    "watermarks": {
+        "lines": [80, 95],
+        "functions": [80, 95],
+        "branches": [80, 95],
+        "statements": [80, 95]
+    }
+  }
+}
