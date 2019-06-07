@@ -12,8 +12,12 @@ import {constants as http2Constants} from 'http2';
 const APPLICATION_JSON = 'application/json';
 const DEFAULT_HEADERS = new Map().set(http2Constants.HTTP2_HEADER_CONTENT_TYPE, APPLICATION_JSON);
 
+export const skillService: SkillService = new SkillService();
+export const jobService: JobService = new JobService();
+export const educationService: EducationService = new EducationService();
+export const certificationService: CertificationService = new CertificationService();
+
 export const readSkillsHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
-    const skillService: SkillService = new SkillService();
     try {
         let data: Array<Skill> = await skillService.readAll(event, context);
         return handleSuccess(data);
@@ -24,7 +28,7 @@ export const readSkillsHandler = async (event: any = {}, context: any = {}): Pro
 };
 export const upsertSkillHandler = async (event: Skill, context: any = {}): Promise<LambdaResult> => {
     try {
-        await new SkillService().upsert(event, context);
+        await skillService.upsert(event, context);
         return handleAccepted();
     }
     catch (err) {
@@ -33,7 +37,7 @@ export const upsertSkillHandler = async (event: Skill, context: any = {}): Promi
 };
 export const deleteSkillHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        await new SkillService().delete(event, context);
+        await skillService.delete(event, context);
         return handleAccepted();
     }
     catch (err) {
@@ -43,7 +47,7 @@ export const deleteSkillHandler = async (event: any = {}, context: any = {}): Pr
 
 export const readJobsHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        let data: Array<Job> = await new JobService().readAll(event, context);
+        let data: Array<Job> = await jobService.readAll(event, context);
         return handleSuccess(data);
     }
     catch (err) {
@@ -52,7 +56,7 @@ export const readJobsHandler = async (event: any = {}, context: any = {}): Promi
 };
 export const upsertJobHandler = async (event: Job, context: any = {}): Promise<LambdaResult> => {
     try {
-        await new JobService().upsert(event, context);
+        await jobService.upsert(event, context);
         return handleAccepted();
     }
     catch (err) {
@@ -61,7 +65,7 @@ export const upsertJobHandler = async (event: Job, context: any = {}): Promise<L
 };
 export const deleteJobHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        await new JobService().delete(event, context);
+        await jobService.delete(event, context);
         return handleAccepted();
     }
     catch (err) {
@@ -71,7 +75,7 @@ export const deleteJobHandler = async (event: any = {}, context: any = {}): Prom
 
 export const readCertificationsHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        let data: Array<Certification> = await new CertificationService().readAll(event, context);
+        let data: Array<Certification> = await certificationService.readAll(event, context);
         return handleSuccess(data);
     }
     catch (err) {
@@ -80,7 +84,7 @@ export const readCertificationsHandler = async (event: any = {}, context: any = 
 };
 export const upsertCertificationHandler = async (event: Certification, context: any = {}): Promise<LambdaResult> => {
     try {
-        await new CertificationService().upsert(event, context);
+        await certificationService.upsert(event, context);
         return handleAccepted();
     }
     catch (err) {
@@ -89,7 +93,7 @@ export const upsertCertificationHandler = async (event: Certification, context: 
 };
 export const deleteCertificationHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        await new CertificationService().delete(event, context);
+        await certificationService.delete(event, context);
         return handleAccepted();
     }
     catch (err) {
@@ -99,7 +103,7 @@ export const deleteCertificationHandler = async (event: any = {}, context: any =
 
 export const readEducationHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        let data: Array<Education> = await new EducationService().readAll(event, context);
+        let data: Array<Education> = await educationService.readAll(event, context);
         return handleSuccess(data);
     }
     catch (err) {
@@ -108,7 +112,7 @@ export const readEducationHandler = async (event: any = {}, context: any = {}): 
 };
 export const upsertEducationHandler = async (event: Education, context: any = {}): Promise<LambdaResult> => {
     try {
-        await new EducationService().upsert(event, context);
+        await educationService.upsert(event, context);
         return handleAccepted();
     }
     catch (err) {
@@ -117,7 +121,7 @@ export const upsertEducationHandler = async (event: Education, context: any = {}
 };
 export const deleteEducationHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        await new EducationService().delete(event, context);
+        await educationService.delete(event, context);
         return handleAccepted();
     }
     catch (err) {
