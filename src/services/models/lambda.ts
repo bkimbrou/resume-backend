@@ -3,3 +3,8 @@ export interface LambdaResult {
     headers?: Map<string, string>,
     data?: any
 }
+
+export interface LambdaInput {
+    headers?: Map<string, string>,
+    data?: any
+}

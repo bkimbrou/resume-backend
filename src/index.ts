@@ -6,7 +6,7 @@ import {CertificationService} from './services/certifications/certificationServi
 import {SkillService} from './services/skills/skillService';
 import {JobService} from './services/jobs/jobService';
 import {EducationService} from './services/education/educationService';
-import {LambdaResult} from './services/models/lambda';
+import {LambdaInput, LambdaResult} from './services/models/lambda';
 import {constants as http2Constants} from 'http2';
 
 const APPLICATION_JSON = 'application/json';
@@ -17,7 +17,7 @@ export const jobService: JobService = new JobService();
 export const educationService: EducationService = new EducationService();
 export const certificationService: CertificationService = new CertificationService();
 
-export const readSkillsHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+export const readSkillsHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
     try {
         let data: Array<Skill> = await skillService.readAll(event, context);
         return handleSuccess(data);
@@ -26,18 +26,18 @@ export const readSkillsHandler = async (event: any = {}, context: any = {}): Pro
         return handleError(err);
     }
 };
-export const upsertSkillHandler = async (event: Skill, context: any = {}): Promise<LambdaResult> => {
+export const upsertSkillHandler = async (event: LambdaInput, context: any = {}): Promise<LambdaResult> => {
     try {
-        await skillService.upsert(event, context);
+        await skillService.upsert(event.data, context);
         return handleAccepted();
     }
     catch (err) {
         return handleError(err);
     }
 };
-export const deleteSkillHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+export const deleteSkillHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        await skillService.delete(event, context);
+        await skillService.delete(event.data, context);
         return handleAccepted();
     }
     catch (err) {
@@ -45,7 +45,7 @@ export const deleteSkillHandler = async (event: any = {}, context: any = {}): Pr
     }
 };
 
-export const readJobsHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+export const readJobsHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
     try {
         let data: Array<Job> = await jobService.readAll(event, context);
         return handleSuccess(data);
@@ -54,18 +54,18 @@ export const readJobsHandler = async (event: any = {}, context: any = {}): Promi
         return handleError(err);
     }
 };
-export const upsertJobHandler = async (event: Job, context: any = {}): Promise<LambdaResult> => {
+export const upsertJobHandler = async (event: LambdaInput, context: any = {}): Promise<LambdaResult> => {
     try {
-        await jobService.upsert(event, context);
+        await jobService.upsert(event.data, context);
         return handleAccepted();
     }
     catch (err) {
         return handleError(err);
     }
 };
-export const deleteJobHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+export const deleteJobHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        await jobService.delete(event, context);
+        await jobService.delete(event.data, context);
         return handleAccepted();
     }
     catch (err) {
@@ -73,7 +73,7 @@ export const deleteJobHandler = async (event: any = {}, context: any = {}): Prom
     }
 };
 
-export const readCertificationsHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+export const readCertificationsHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
     try {
         let data: Array<Certification> = await certificationService.readAll(event, context);
         return handleSuccess(data);
@@ -82,18 +82,18 @@ export const readCertificationsHandler = async (event: any = {}, context: any = 
         return handleError(err);
     }
 };
-export const upsertCertificationHandler = async (event: Certification, context: any = {}): Promise<LambdaResult> => {
+export const upsertCertificationHandler = async (event: LambdaInput, context: any = {}): Promise<LambdaResult> => {
     try {
-        await certificationService.upsert(event, context);
+        await certificationService.upsert(event.data, context);
         return handleAccepted();
     }
     catch (err) {
         return handleError(err);
     }
 };
-export const deleteCertificationHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+export const deleteCertificationHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        await certificationService.delete(event, context);
+        await certificationService.delete(event.data, context);
         return handleAccepted();
     }
     catch (err) {
@@ -101,7 +101,7 @@ export const deleteCertificationHandler = async (event: any = {}, context: any =
     }
 };
 
-export const readEducationHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+export const readEducationHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
     try {
         let data: Array<Education> = await educationService.readAll(event, context);
         return handleSuccess(data);
@@ -110,18 +110,18 @@ export const readEducationHandler = async (event: any = {}, context: any = {}): 
         return handleError(err);
     }
 };
-export const upsertEducationHandler = async (event: Education, context: any = {}): Promise<LambdaResult> => {
+export const upsertEducationHandler = async (event: LambdaInput, context: any = {}): Promise<LambdaResult> => {
     try {
-        await educationService.upsert(event, context);
+        await educationService.upsert(event.data, context);
         return handleAccepted();
     }
     catch (err) {
         return handleError(err);
     }
 };
-export const deleteEducationHandler = async (event: any = {}, context: any = {}): Promise<LambdaResult> => {
+export const deleteEducationHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
     try {
-        await educationService.delete(event, context);
+        await educationService.delete(event.data, context);
         return handleAccepted();
     }
     catch (err) {
