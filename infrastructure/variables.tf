@@ -22,3 +22,8 @@ variable "skills_table" {
   type = "string"
   description = "name of the table for skills"
 }
+
+variable "configs_table" {
+  type = "string"
+  description = "name of the table to store configurations"
+}

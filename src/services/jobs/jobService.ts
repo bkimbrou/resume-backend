@@ -5,8 +5,8 @@ import {Certification} from '../models/certification';
 import {Education} from '../models/education';
 
 export class JobService extends AbstractDynamoService<Job> implements Service<Job> {
-    constructor() {
-        super('resume-jobs', 50)
+    constructor(tableName: string, readLimit: number) {
+        super(tableName, readLimit)
     }
 
     public async readAll(event: any = {}, context: any = {}) : Promise<Array<Job>> {

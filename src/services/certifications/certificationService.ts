@@ -3,8 +3,8 @@ import {AbstractDynamoService} from '../abstractDynamoService';
 import {Service} from '../service';
 
 export class CertificationService extends AbstractDynamoService<Certification> implements Service<Certification> {
-    constructor() {
-        super('resume-certifications', 50)
+    constructor(tableName: string, readLimit: number) {
+        super(tableName, readLimit)
     }
 
     public async readAll(event: any = {}, context: any = {}) : Promise<Array<Certification>> {

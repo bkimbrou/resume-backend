@@ -7,17 +7,47 @@ import {SkillService} from './services/skills/skillService';
 import {JobService} from './services/jobs/jobService';
 import {EducationService} from './services/education/educationService';
 import {LambdaInput, LambdaResult} from './services/models/lambda';
+import AWS from 'aws-sdk';
+import {AbstractDynamoService} from './services/abstractDynamoService';
+import {Context, Handler} from 'aws-lambda'
 
 const APPLICATION_JSON = 'application/json';
 const DEFAULT_HEADERS = new Map().set('Content-Type', APPLICATION_JSON);
 
-export const skillService: SkillService = new SkillService();
-export const jobService: JobService = new JobService();
-export const educationService: EducationService = new EducationService();
-export const certificationService: CertificationService = new CertificationService();
+export let skillService: SkillService;
+export let jobService: JobService;
+export let educationService: EducationService;
+export let certificationService: CertificationService;
 
-export const readSkillsHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
+const getConfig = async (context: Context): Promise<Config> => {
+    const dynamo = new AWS.DynamoDB();
+    if (process.env.CONFIG_TABLE) {
+        const config = await dynamo.getItem({
+            TableName: process.env.CONFIG_TABLE,
+            Key: {
+                'env': {
+                    S: context.functionVersion
+                }
+            }
+        });
+        return config.promise().then(result => {
+            if (result.Item) {
+                return Promise.reject(AbstractDynamoService.itemToJson(result.Item));
+            } else {
+                return Promise.reject("No configuration items found");
+            }
+        }).catch(err => {
+            return Promise.reject(err);
+        });
+    } else {
+        return Promise.reject("Configuration table not specified");
+    }
+};
+
+export const readSkillsHandler: Handler = async (event: LambdaInput = {}, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        skillService = new SkillService(config.skillsTable, config.skillsReadLimit);
         let data: Array<Skill> = await skillService.readAll(event, context);
         return handleSuccess(data);
     }
@@ -25,8 +55,10 @@ export const readSkillsHandler = async (event: LambdaInput = {}, context: any = 
         return handleError(err);
     }
 };
-export const upsertSkillHandler = async (event: LambdaInput, context: any = {}): Promise<LambdaResult> => {
+export const upsertSkillHandler: Handler = async (event: LambdaInput, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        skillService = new SkillService(config.skillsTable, config.skillsReadLimit);
         await skillService.upsert(event.data, context);
         return handleAccepted();
     }
@@ -34,8 +66,10 @@ export const upsertSkillHandler = async (event: LambdaInput, context: any = {}):
         return handleError(err);
     }
 };
-export const deleteSkillHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
+export const deleteSkillHandler: Handler = async (event: LambdaInput = {}, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        skillService = new SkillService(config.skillsTable, config.skillsReadLimit);
         await skillService.delete(event.data, context);
         return handleAccepted();
     }
@@ -44,8 +78,10 @@ export const deleteSkillHandler = async (event: LambdaInput = {}, context: any =
     }
 };
 
-export const readJobsHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
+export const readJobsHandler: Handler = async (event: LambdaInput = {}, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        jobService = new JobService(config.jobsTable, config.jobsReadLimit);
         let data: Array<Job> = await jobService.readAll(event, context);
         return handleSuccess(data);
     }
@@ -53,8 +89,10 @@ export const readJobsHandler = async (event: LambdaInput = {}, context: any = {}
         return handleError(err);
     }
 };
-export const upsertJobHandler = async (event: LambdaInput, context: any = {}): Promise<LambdaResult> => {
+export const upsertJobHandler: Handler = async (event: LambdaInput, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        jobService = new JobService(config.jobsTable, config.jobsReadLimit);
         await jobService.upsert(event.data, context);
         return handleAccepted();
     }
@@ -62,8 +100,10 @@ export const upsertJobHandler = async (event: LambdaInput, context: any = {}): P
         return handleError(err);
     }
 };
-export const deleteJobHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
+export const deleteJobHandler: Handler = async (event: LambdaInput = {}, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        jobService = new JobService(config.jobsTable, config.jobsReadLimit);
         await jobService.delete(event.data, context);
         return handleAccepted();
     }
@@ -72,8 +112,10 @@ export const deleteJobHandler = async (event: LambdaInput = {}, context: any = {
     }
 };
 
-export const readCertificationsHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
+export const readCertificationsHandler: Handler = async (event: LambdaInput = {}, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        certificationService = new CertificationService(config.certificationsTable, config.certificationsReadLimit);
         let data: Array<Certification> = await certificationService.readAll(event, context);
         return handleSuccess(data);
     }
@@ -81,8 +123,10 @@ export const readCertificationsHandler = async (event: LambdaInput = {}, context
         return handleError(err);
     }
 };
-export const upsertCertificationHandler = async (event: LambdaInput, context: any = {}): Promise<LambdaResult> => {
+export const upsertCertificationHandler: Handler = async (event: LambdaInput, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        certificationService = new CertificationService(config.certificationsTable, config.certificationsReadLimit);
         await certificationService.upsert(event.data, context);
         return handleAccepted();
     }
@@ -90,8 +134,10 @@ export const upsertCertificationHandler = async (event: LambdaInput, context: an
         return handleError(err);
     }
 };
-export const deleteCertificationHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
+export const deleteCertificationHandler: Handler = async (event: LambdaInput = {}, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        certificationService = new CertificationService(config.certificationsTable, config.certificationsReadLimit);
         await certificationService.delete(event.data, context);
         return handleAccepted();
     }
@@ -100,8 +146,10 @@ export const deleteCertificationHandler = async (event: LambdaInput = {}, contex
     }
 };
 
-export const readEducationHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
+export const readEducationHandler: Handler = async (event: LambdaInput = {}, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        educationService = new EducationService(config.educationTable, config.educationReadLimit);
         let data: Array<Education> = await educationService.readAll(event, context);
         return handleSuccess(data);
     }
@@ -109,8 +157,10 @@ export const readEducationHandler = async (event: LambdaInput = {}, context: any
         return handleError(err);
     }
 };
-export const upsertEducationHandler = async (event: LambdaInput, context: any = {}): Promise<LambdaResult> => {
+export const upsertEducationHandler: Handler = async (event: LambdaInput, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        educationService = new EducationService(config.educationTable, config.educationReadLimit);
         await educationService.upsert(event.data, context);
         return handleAccepted();
     }
@@ -118,8 +168,10 @@ export const upsertEducationHandler = async (event: LambdaInput, context: any = 
         return handleError(err);
     }
 };
-export const deleteEducationHandler = async (event: LambdaInput = {}, context: any = {}): Promise<LambdaResult> => {
+export const deleteEducationHandler: Handler = async (event: LambdaInput = {}, context: Context): Promise<LambdaResult> => {
     try {
+        const config: Config = await getConfig(context);
+        educationService = new EducationService(config.educationTable, config.educationReadLimit);
         await educationService.delete(event.data, context);
         return handleAccepted();
     }
