@@ -17,7 +17,7 @@ describe('Skill Service Tests', () => {
     });
 
     beforeEach(async (done) => {
-        service = new SkillService();
+        service = new SkillService('dummy_table', 50);
         done()
     });
 

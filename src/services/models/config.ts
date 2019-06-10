@@ -1,4 +1,4 @@
-interface Config {
+export interface Config {
     certificationsTable: string,
     certificationsReadLimit: number,
     educationTable: string,

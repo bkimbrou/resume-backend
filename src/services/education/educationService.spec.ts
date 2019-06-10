@@ -17,7 +17,7 @@ describe('Education Service Tests', () => {
     });
 
     beforeEach(async (done) => {
-        service = new EducationService();
+        service = new EducationService('dummy_table', 50);
         done()
     });
 

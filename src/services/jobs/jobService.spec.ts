@@ -17,7 +17,7 @@ describe('Job Service Tests', () => {
     });
 
     beforeEach(async (done) => {
-        service = new JobService();
+        service = new JobService('dummy_table', 50);
         done()
     });
 

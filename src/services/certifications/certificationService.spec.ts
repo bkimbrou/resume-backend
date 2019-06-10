@@ -17,7 +17,7 @@ describe('Certification Service Tests', () => {
     });
 
     beforeEach(async (done) => {
-        service = new CertificationService();
+        service = new CertificationService('dummy_table', 50);
         done()
     });
 
