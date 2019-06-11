@@ -340,3 +340,13 @@ resource "aws_lambda_function" "delete_skills_lambda" {
     }
   }
 }
+
+# API GATEWAY RESOURCES
+resource "aws_api_gateway_rest_api" "resume-api" {
+  name = "resume-api"
+  description = "API to access the resources needed for a resume"
+  body = file("../openapi.json") //TODO: add amazon integration items to spec
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}

@@ -243,6 +243,8 @@ export const generateEducation = function (withId: boolean = true) : Education {
         degree: randomNumber(50).toString(36),
         location: randomNumber(200, 20).toString(36),
         isCurrentlyAttending: false,
+        graduated: true,
+        level: randomNumber(25).toString(36),
         graduationDate: new Date(randomNumber(2020, 2010), randomNumber(12), randomNumber(28))
     };
 

@@ -1,2 +1,2 @@
-# resume-backend
-The backend for the resume application
+# resume-api
+The api for the resume application
