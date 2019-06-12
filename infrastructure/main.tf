@@ -8,26 +8,6 @@ resource "aws_dynamodb_table" "certifications_table" {
     name = "id"
     type = "S"
   }
-  attribute {
-    name = "name"
-    type = "S"
-  }
-  attribute {
-    name = "description"
-    type = "S"
-  }
-  attribute {
-    name = "dateIssued"
-    type = "S"
-  }
-  attribute {
-    name = "dateExpires"
-    type = "S"
-  }
-  attribute {
-    name = "image"
-    type = "S"
-  }
 }
 
 resource "aws_dynamodb_table" "education_table" {
@@ -37,26 +17,6 @@ resource "aws_dynamodb_table" "education_table" {
   write_capacity = 1
   attribute {
     name = "id"
-    type = "S"
-  }
-  attribute {
-    name = "school"
-    type = "S"
-  }
-  attribute {
-    name = "location"
-    type = "S"
-  }
-  attribute {
-    name = "isCurrentlyAttending"
-    type = "BOOL"
-  }
-  attribute {
-    name = "degree"
-    type = "S"
-  }
-  attribute {
-    name = "graduationDate"
     type = "S"
   }
 }
@@ -70,26 +30,6 @@ resource "aws_dynamodb_table" "jobs_table" {
     name = "id"
     type = "S"
   }
-  attribute {
-    name = "employer"
-    type = "S"
-  }
-  attribute {
-    name = "title"
-    type = "S"
-  }
-  attribute {
-    name = "responsibilities"
-    type = "SS"
-  }
-  attribute {
-    name = "startDate"
-    type = "S"
-  }
-  attribute {
-    name = "endDate"
-    type = "S"
-  }
 }
 
 resource "aws_dynamodb_table" "skills_table" {
@@ -99,22 +39,6 @@ resource "aws_dynamodb_table" "skills_table" {
   write_capacity = 1
   attribute {
     name = "id"
-    type = "S"
-  }
-  attribute {
-    name = "name"
-    type = "S"
-  }
-  attribute {
-    name = "description"
-    type = "S"
-  }
-  attribute {
-    name = "monthsOfExperience"
-    type = "N"
-  }
-  attribute {
-    name = "dateLastUsed"
     type = "S"
   }
 }
@@ -127,10 +51,6 @@ resource "aws_dynamodb_table" "configs_table" {
   attribute {
     name = "env"
     type = "S"
-  }
-  attribute {
-    name = "config"
-    type = "M"
   }
 }
 
@@ -164,7 +84,7 @@ resource "aws_iam_policy_attachment" "lambda_read_role_attach_dynamo" {
   ]
 }
 
-resource "aws_iam_policy_attachment" "lambda_read_role_attach_dynamo" {
+resource "aws_iam_policy_attachment" "lambda_write_role_attach_dynamo" {
   name = "lambda_write_role_attach_dynamo"
   policy_arn = aws_iam_policy.lambda_dynamo_write_policy.arn
   roles = [
@@ -181,7 +101,7 @@ resource "aws_lambda_function" "read_all_certifications_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -195,7 +115,7 @@ resource "aws_lambda_function" "read_all_education_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -209,7 +129,7 @@ resource "aws_lambda_function" "read_all_jobs_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -223,7 +143,7 @@ resource "aws_lambda_function" "read_all_skills_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -237,7 +157,7 @@ resource "aws_lambda_function" "upsert_certifications_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -251,7 +171,7 @@ resource "aws_lambda_function" "upsert_education_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -265,7 +185,7 @@ resource "aws_lambda_function" "upsert_jobs_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -279,7 +199,7 @@ resource "aws_lambda_function" "upsert_skills_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -293,7 +213,7 @@ resource "aws_lambda_function" "delete_certifications_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -307,7 +227,7 @@ resource "aws_lambda_function" "delete_education_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -321,7 +241,7 @@ resource "aws_lambda_function" "delete_jobs_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }
@@ -335,7 +255,7 @@ resource "aws_lambda_function" "delete_skills_lambda" {
   filename = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
-    variables {
+    variables = {
       CONFIG_TABLE = var.configs_table
     }
   }

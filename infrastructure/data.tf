@@ -1,7 +1,7 @@
 data "archive_file" "lambda_zip" {
-  output_path = "dist/lambda.zip"
+  output_path = "../dist/lambda.zip"
   type = "zip"
-  source_file = "dist/index.js"
+  source_file = "../dist/index.js"
 }
 
 data "aws_iam_policy_document" "lambda_assume_role_policy" {
