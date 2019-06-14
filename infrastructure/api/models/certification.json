@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "required": [
+    "name",
+    "description",
+    "dateIssued"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "unique identifier for certification"
+    },
+    "name": {
+      "type": "string",
+      "description": "name of certification"
+    },
+    "description": {
+      "type": "string",
+      "description": "A more verbose description of what the certification is"
+    },
+    "dateIssued": {
+      "type": "string",
+      "format": "date",
+      "description": "date the certification was issued"
+    },
+    "dateExpires": {
+      "type": "string",
+      "format": "date",
+      "description": "date the certification expires, if applicable"
+    },
+    "image": {
+      "type": "string",
+      "format": "uri"
+    }
+  }
+}

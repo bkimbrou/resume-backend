@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "required": [
+    "school",
+    "location",
+    "level",
+    "degree",
+    "isCurrentlyAttending",
+    "graduated"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "unique identifier for education"
+    },
+    "school": {
+      "type": "string",
+      "description": "the school attended"
+    },
+    "location": {
+      "type": "string",
+      "description": "the location of the school"
+    },
+    "level": {
+      "type": "string",
+      "description": "the level of education pursued"
+    },
+    "degree": {
+      "type": "string",
+      "description": "the degree obtained or being worked towards"
+    },
+    "isCurrentlyAttending": {
+      "type": "boolean",
+      "description": "flag indicating if currently attending school"
+    },
+    "graduated": {
+      "type": "boolean",
+      "description": "flag if graduated with degree"
+    },
+    "graduationDate": {
+      "type": "string",
+      "description": "the data of graduation or expected date of graduation"
+    }
+  }
+}

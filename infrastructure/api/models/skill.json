@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "required": [
+    "name",
+    "description",
+    "monthsOfExperience",
+    "dateLastUsed"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "unique identifier for skill"
+    },
+    "name": {
+      "type": "string",
+      "description": "name of skill"
+    },
+    "description": {
+      "type": "string",
+      "description": "A more verbose description of what the skill is"
+    },
+    "monthsOfExperience": {
+      "type": "integer",
+      "description": "the number of months of experience with skill"
+    },
+    "dateLastUsed": {
+      "type": "string",
+      "format": "date",
+      "description": "the date the skill was last used"
+    }
+  }
+}

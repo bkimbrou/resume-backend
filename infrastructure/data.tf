@@ -1,3 +1,7 @@
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
 data "archive_file" "lambda_zip" {
   output_path = "../dist/lambda.zip"
   type = "zip"

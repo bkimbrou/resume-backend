@@ -6,5 +6,7 @@ export interface LambdaResult {
 
 export interface LambdaInput {
     headers?: Map<string, string>,
+    queryParams?: Map<string, string>,
+    pathParams?: Map<string, string>,
     data?: any
 }
